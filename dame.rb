@@ -1,26 +1,39 @@
 # -*- coding: utf-8 -*-
 class ChessBoard
 
-  def symbole_init
-    @t = []
-    @t.push("╔") # 0
-    @t.push("╗") # 1
-    @t.push("╝") # 2
-    @t.push("╚") # 3
-    @t.push("╠") # 4
-    @t.push("╦") # 5
-    @t.push("╣") # 6
-    @t.push("╩") # 7
-    @t.push("║") # 8
-    @t.push("═") # 9
-    @t.push("╬") # 10
-    @t
-  end
-
   def initialize(size)
     @size = size
-    @plate = Array.new(size, 0)
-    @symbole = symbole_init
+    @tokens = init_tokens
+    # @plate = Array.new(size, Array.new(size, " "))
+    @plate = create_plate
+  end
+
+  def init_tokens
+    t = []
+    t.push("╔") # 0
+    t.push("╗") # 1
+    t.push("╝") # 2
+    t.push("╚") # 3
+    t.push("╠") # 4
+    t.push("╦") # 5
+    t.push("╣") # 6
+    t.push("╩") # 7
+    t.push("║") # 8
+    t.push("═") # 9
+    t.push("╬") # 10
+    t
+  end
+
+  def create_plate
+    tab = []
+    (1..@size).each do |num_line|
+      line = []
+      (1..@size).each do |num_column|
+        line << " "
+      end
+      tab << line
+    end
+    tab
   end
 
   # Retourne le plateau de jeu
@@ -32,8 +45,10 @@ class ChessBoard
   def get_queens
     queen = 0
     @plate.each do |line|
-      if line != 0
-        queen += 1
+      line.each do |square|
+        if is_queen?(square)
+          queen += 1
+        end
       end
     end
     queen
@@ -41,7 +56,7 @@ class ChessBoard
 
   def insert_dame(line, column)
     if validate?(line, column)
-      @plate[line-1] = column
+      update(line, column)
       "dame insérée en (#{line},#{column})"
     else
       "impossible d'insérée une dame à cette endroit !"
@@ -50,120 +65,144 @@ class ChessBoard
 
   def display
     header_line
-    count = 1
+    first_line
+    num_line = 1
     @plate.each do |line|
-      display_line(line)
-      if count != @size
+      display_line(line,num_line)
+      if num_line != @size
         interline
       end
-      count += 1    
+      num_line += 1    
     end
     footer_line
   end
 
-  def display_array
-    result = "["
-    @plate.each do |line|
-      result += "#{line},"
-    end
-    result[-1] = "]"
-    print result
-  end
-
   def have_still_possibilities?
-    true
+    result = false
+    line_index = 0
+    column_index = 0
+    while line_index < @size && !result
+      while column_index < @size && !result
+        if @plate[line_index-1][column_index-1] == " "
+          result = true
+        end
+
+        column_index += 1
+      end
+      line_index += 1
+    end
+    result
   end
 
   private
 
-  def validate?(line, column)
-    validate_line?(line) && validate_column?(column) && validate_diagonal?(line, column)
+  # mise à jour du plateau après insertion d'une dame
+  def update(line, column)
+    @plate[line-1][column-1] = "D"
+    update_line(line)
+    update_column(column)
+    update_diagonal(line, column)
   end
 
-  def validate_line?(line)
-    if line.between?(1, @size)
-      @plate[line-1] == 0
-    else
-      raise ArgumentError
-    end
-  end
-
-  def validate_column?(column)
-    if column.between?(1, @size)
-      validate = true
-      @plate.each do |line|
-        if line == column
-          validate = false
-        end
-      end
-      validate
-    else
-      raise ArgumentError
-    end
-  end
-
-  def validate_diagonal?(line, column)
-    validate = true
-    @plate.each do |line_plate|
-      gap_line = line_plate - line
-      if gap_line != 0 # si ==, ne sert à rien de le faire car même ligne de la dame que l'on veut insérer
-
-        if (line + gap_line).between?(1, @size) # si on est bien sur le plateau
-          if line_plate == column + gap_line
-            validate = false
-          end
-        end
-
-        if (line - gap_line).between?(1, @size) # si on est bien sur le plateau
-          if line_plate == column - gap_line
-            validate = false
-          end
-        end
-
+  def update_line(line)
+    @plate[line-1].each_with_index do |square, index|
+      if square == " "
+        @plate[line-1][index] = "-"
       end
     end
-    validate
   end
 
-  def display_line(line)
-    string = @t[8]
-    count = 1
+  def update_column(column)
     (1..@size).each do |num|
-      if count == line
-        string += " D #{@t[8]}"
-      else
-        string += "   #{@t[8]}"
+      if @plate[num-1][column-1] == " "
+        @plate[num-1][column-1] = "-"
       end
-      count += 1
     end
-    string[-1] = "#{@t[8]}\n"
+  end
+
+  def update_diagonal(line, column)
+    (1..@size).each do |num|
+      if existing_position?(line-num, column-num)
+        if @plate[line-num-1][column-num-1] == " "
+          @plate[line-num-1][column-num-1] = "-"
+        end
+      end
+
+      if existing_position?(line-num, column+num)
+        if @plate[line-num-1][column+num-1] == " "
+          @plate[line-num-1][column+num-1] = "-"
+        end
+      end
+
+      if existing_position?(line+num, column-num)
+        if @plate[line+num-1][column-num-1] == " "
+          @plate[line+num-1][column-num-1] = "-"
+        end
+      end
+
+      if existing_position?(line+num, column+num)
+        if @plate[line+num-1][column+num-1] == " "
+          @plate[line+num-1][column+num-1] = "-"
+        end
+      end
+    end
+  end
+
+  def is_queen?(square)
+    square == "D"
+  end
+
+  def validate?(line, column)
+    if existing_position?(line, column)
+      @plate[line-1][column-1] == " "
+    end
+  end
+
+  def existing_position?(line, column)
+    line.between?(1, @size) && column.between?(1, @size)
+  end
+
+  def display_line(line, num_line)
+    string = "#{num_line} #{@tokens[8]}"
+    (1..@size).each do |num|
+      string += " #{line[num-1]} #{@tokens[8]}"
+    end
+    string += "\n"
     print string
   end
 
   def header_line
-    line = @t[0]
+    line = "    "
     (1..@size).each do |num|
-      line += @t[9] + @t[9] + @t[9] + @t[5]
+      line += "#{num}   "
     end
-    line[-1] = "#{@t[1]}\n"
+    print line + "\n"
+  end
+
+  def first_line
+    line = "  #{@tokens[0]}"
+    (1..@size).each do |num|
+      line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[5]
+    end
+    line[-1] = "#{@tokens[1]}\n"
     print line
   end
 
   def footer_line
-    line = @t[3]
+    line = "  #{@tokens[3]}"
     (1..@size).each do |num|
-      line += @t[9] + @t[9] + @t[9] + @t[7]
+      line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[7]
     end
-    line[-1] = "#{@t[2]}\n"
+    line[-1] = "#{@tokens[2]}\n"
     print line
   end
 
   def interline
-    line = @t[4]
+    line = "  #{@tokens[4]}"
     (1..@size).each do |num|
-      line += @t[9] + @t[9] + @t[9] + @t[10]
+      line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[10]
     end
-    line[-1] = "#{@t[6]}\n"
+    line[-1] = "#{@tokens[6]}\n"
     print line
   end
 
