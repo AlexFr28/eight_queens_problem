@@ -4,6 +4,7 @@ Le but du problème des huit dames est de placer huit dames d'un jeu d'échecs s
 (cf Wikipédia)
 
 ## Commande
+Attention : vous devez utiliser une version de ruby au moins égale à 2.2.0
 Pour lancer le jeu, taper "ruby jeu.rb" dans la console après avoir récupérer le code source.
 (nb: pour avoir directement l'échiquier (8x8), il faut taper "ruby jeu.rb 8"
 
