@@ -18,16 +18,16 @@ chess_board = ChessBoard.new(size)
 message = "Début de la partie\n"
 while chess_board.have_still_possibilities?
   system "clear"
-  puts message
+  puts "#{message}\n"
   chess_board.display
-  puts "#{chess_board.get_queens} dame(s) placée(s)"
-  puts "Où voulez-vous placer la prochaine dame :"
+  puts "\n #{chess_board.get_queens} dame(s) placée(s)"
+  puts "\nOù voulez-vous placer la prochaine dame :"
   print "ligne ? "
   line = gets.chomp.to_i
   print "colonne ? "
   column = gets.chomp.to_i
 
-  message = chess_board.insert_dame(line, column)
+  message = "#{chess_board.insert_dame(line, column)}\n"
 end
 
 system "clear"

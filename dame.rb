@@ -86,7 +86,6 @@ class ChessBoard
         if @plate[line_index-1][column_index-1] == " "
           result = true
         end
-
         column_index += 1
       end
       line_index += 1
@@ -163,7 +162,7 @@ class ChessBoard
   end
 
   def display_line(line, num_line)
-    string = "#{num_line} #{@tokens[8]}"
+    string = " #{num_line} #{@tokens[8]}"
     (1..@size).each do |num|
       string += " #{line[num-1]} #{@tokens[8]}"
     end
@@ -172,7 +171,7 @@ class ChessBoard
   end
 
   def header_line
-    line = "    "
+    line = "     "
     (1..@size).each do |num|
       line += "#{num}   "
     end
@@ -180,7 +179,7 @@ class ChessBoard
   end
 
   def first_line
-    line = "  #{@tokens[0]}"
+    line = "   #{@tokens[0]}"
     (1..@size).each do |num|
       line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[5]
     end
@@ -189,7 +188,7 @@ class ChessBoard
   end
 
   def footer_line
-    line = "  #{@tokens[3]}"
+    line = "   #{@tokens[3]}"
     (1..@size).each do |num|
       line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[7]
     end
@@ -198,7 +197,7 @@ class ChessBoard
   end
 
   def interline
-    line = "  #{@tokens[4]}"
+    line = "   #{@tokens[4]}"
     (1..@size).each do |num|
       line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[10]
     end
