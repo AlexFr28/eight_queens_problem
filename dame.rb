@@ -88,6 +88,7 @@ class ChessBoard
         end
         column_index += 1
       end
+      column_index = 0
       line_index += 1
     end
     result
