@@ -4,36 +4,7 @@ class ChessBoard
   def initialize(size)
     @size = size
     @tokens = init_tokens
-    # @plate = Array.new(size, Array.new(size, " "))
     @plate = create_plate
-  end
-
-  def init_tokens
-    t = []
-    t.push("╔") # 0
-    t.push("╗") # 1
-    t.push("╝") # 2
-    t.push("╚") # 3
-    t.push("╠") # 4
-    t.push("╦") # 5
-    t.push("╣") # 6
-    t.push("╩") # 7
-    t.push("║") # 8
-    t.push("═") # 9
-    t.push("╬") # 10
-    t
-  end
-
-  def create_plate
-    tab = []
-    (1..@size).each do |num_line|
-      line = []
-      (1..@size).each do |num_column|
-        line << " "
-      end
-      tab << line
-    end
-    tab
   end
 
   # Retourne le plateau de jeu
@@ -95,6 +66,34 @@ class ChessBoard
   end
 
   private
+
+  def init_tokens
+    t = []
+    t.push("╔") # 0
+    t.push("╗") # 1
+    t.push("╝") # 2
+    t.push("╚") # 3
+    t.push("╠") # 4
+    t.push("╦") # 5
+    t.push("╣") # 6
+    t.push("╩") # 7
+    t.push("║") # 8
+    t.push("═") # 9
+    t.push("╬") # 10
+    t
+  end
+
+  def create_plate
+    tab = []
+    (1..@size).each do |num_line|
+      line = []
+      (1..@size).each do |num_column|
+        line << " "
+      end
+      tab << line
+    end
+    tab
+  end
 
   # mise à jour du plateau après insertion d'une dame
   def update(line, column)
@@ -163,7 +162,11 @@ class ChessBoard
   end
 
   def display_line(line, num_line)
-    string = " #{num_line} #{@tokens[8]}"
+    string = ""
+    if num_line != 10
+      string += " "
+    end
+    string += " #{num_line} #{@tokens[8]}"
     (1..@size).each do |num|
       string += " #{line[num-1]} #{@tokens[8]}"
     end
@@ -172,7 +175,7 @@ class ChessBoard
   end
 
   def header_line
-    line = "     "
+    line = "      "
     (1..@size).each do |num|
       line += "#{num}   "
     end
@@ -180,7 +183,7 @@ class ChessBoard
   end
 
   def first_line
-    line = "   #{@tokens[0]}"
+    line = "    #{@tokens[0]}"
     (1..@size).each do |num|
       line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[5]
     end
@@ -189,7 +192,7 @@ class ChessBoard
   end
 
   def footer_line
-    line = "   #{@tokens[3]}"
+    line = "    #{@tokens[3]}"
     (1..@size).each do |num|
       line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[7]
     end
@@ -198,7 +201,7 @@ class ChessBoard
   end
 
   def interline
-    line = "   #{@tokens[4]}"
+    line = "    #{@tokens[4]}"
     (1..@size).each do |num|
       line += @tokens[9] + @tokens[9] + @tokens[9] + @tokens[10]
     end
