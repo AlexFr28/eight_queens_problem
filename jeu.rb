@@ -1,5 +1,4 @@
 require_relative 'dame'
-require 'pry'
 
 size = 0
 if ARGV.count != 0
@@ -14,7 +13,7 @@ end
 
 # création du plateau de jeu
 chess_board = ChessBoard.new(size)
-# chess_board.get_queens
+
 message = "           Début de la partie\n"
 while chess_board.have_still_possibilities?
   system "clear"
